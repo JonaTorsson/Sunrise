@@ -1,8 +1,9 @@
 import React from 'react'
+import UpdateProfile from '../components/UpdateProfile'
 
 const UpdateProfilePage = () => {
   return (
-	<div>UpdateProfilePage</div>
+	<UpdateProfile />
   )
 }
 
