@@ -1,51 +1,25 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { Container, Row, Col, Form, Button, Card, Alert, Image } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuthContext } from '../contexts/AuthContext'
+import { Link } from 'react-router-dom'
 import logo from '../assets/images/logo.svg'
 
+import useSignupUser from '../hooks/useSignupUser'
+import useForm from '../hooks/useForm'
+
 const SignupForm = () => {
-	const emailRef = useRef()
-	const displayNameRef = useRef()
-	const passwordRef = useRef()
-	const passwordConfirmRef = useRef()
-	const [error, setError] = useState(null)
-	const [loading, setLoading] = useState(false)
-	const [photo, setPhoto] = useState(false)
-	const { signup, setDisplayNameAndPhoto, reloadUser } = useAuthContext()
-	const navigate = useNavigate()
+	const [ values, handleChange, resetForm ] = useForm({
+		email: "",
+		password: "",
+		confirmPassword: ""
+	})
 
-	const handleFileChange = (e) => {
-		if (!e.target.files.length) {
-			setPhoto(null)
-			return
-		}
-
-		setPhoto(e.target.files[0])
-		console.log("File changed!", e.target.files[0])
-	}
+	const { isLoading, createUser, message } = useSignupUser()
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		// make sure user has entered the same password in both input fields
-		if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-			return setError("The passwords does not match")
-		}
-
-		setError(null);
-
-		// try to sign up the user with the specified credentials
-		try {
-			setLoading(true)
-
-			await signup(emailRef.current.value, passwordRef.current.value, displayNameRef.current.value, photo)
-
-			navigate('/')
-		} catch (err) {
-			setError(err.message)
-			setLoading(false)
-		}
+		await createUser(values)
+		resetForm()
 	}
 
 	return (
@@ -62,43 +36,28 @@ const SignupForm = () => {
 						<Card.Body>
 							<Card.Title className="mb-3">Skapa konto</Card.Title>
 
-							{error && (<Alert variant="danger">{error}</Alert>)}
+							{message && (<Alert variant="danger">
+								{message}
+							</Alert>)}
 
 							<Form onSubmit={handleSubmit}>
 
 								<Form.Group id="displayName" className="mb-3">
-									<Form.Label>Användarnamn</Form.Label>
-									<Form.Control type="text" ref={displayNameRef} required />
-								</Form.Group>
-
-								<Form.Group id="email" className="mb-3">
-									<Form.Label>Mail</Form.Label>
-									<Form.Control type="email" ref={emailRef} required />
-								</Form.Group>
-
-								<Form.Group id="photo" className="mb-3">
-									<Form.Label>Profilbild</Form.Label>
-									<Form.Control type="file" onChange={handleFileChange} />
-									<Form.Text>
-										{
-											photo
-												? `${photo.name} (${Math.round(photo.size/1024)} kB)`
-												: 'No photo selected'
-										}
-									</Form.Text>
+									<Form.Label>Epost</Form.Label>
+									<Form.Control name='email' onChange={handleChange} value={values.email} />
 								</Form.Group>
 
 								<Form.Group id="password" className="mb-3">
 									<Form.Label>Lösenord</Form.Label>
-									<Form.Control type="password" ref={passwordRef} required />
+									<Form.Control name='password' type="password" onChange={handleChange} value={values.password} />
 								</Form.Group>
 
 								<Form.Group id="password-confirm" className="mb-3">
 									<Form.Label>Bekräfta lösenord</Form.Label>
-									<Form.Control type="password" ref={passwordConfirmRef} required />
+									<Form.Control name='confirmPassword' type="password" onChange={handleChange} value={values.confirmPassword} />
 								</Form.Group>
 
-								<Button disabled={loading} type="submit">Skapa konto</Button>
+								<Button disabled={isLoading} type="submit">Skapa konto</Button>
 							</Form>
 
 						</Card.Body>
