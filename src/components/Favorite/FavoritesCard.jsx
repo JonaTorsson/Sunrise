@@ -7,9 +7,8 @@ import { parseToUrl } from '../../helpers'
 import useCoordinates from '../../hooks/useCoordinates'
 import useDoc from '../../hooks/useDoc'
 
-const FavoritesCard = ({ locationName, coordinates, locationId, deleteClick, _id, temp }) => {
+const FavoritesCard = ({ locationName, coordinates, locationId, deleteClick, _id }) => {
 	const [ locationImg, setLocationImg ] = useState()
-	const [ itsOn, setItsOn ] = useState(false)
 	const weatherData = useCoordinates(coordinates)
 
 	const img = useDoc(locationId)
@@ -35,8 +34,6 @@ const FavoritesCard = ({ locationName, coordinates, locationId, deleteClick, _id
 						<WeathersContent 
 							data={weatherData.data}
 							locationName={locationName}
-							setItsOn={setItsOn}
-							itsOn={itsOn}
 						/>
 					)}
 
@@ -46,11 +43,9 @@ const FavoritesCard = ({ locationName, coordinates, locationId, deleteClick, _id
 						Gå vidare
 					</Button>
 				</Col>
-					<Dropdown>
-						<Dropdown.Item onClick={() => deleteClick(_id, locationImg, locationName)}>
-							Radera favorit
-						</Dropdown.Item>
-					</Dropdown>
+				<Button onClick={() => deleteClick(_id, locationImg, locationName)}>
+					Radera favorit
+				</Button>
 			</Card>
 
 		</>

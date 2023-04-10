@@ -21,15 +21,12 @@ const PlaceholderImage = ({ locationId }) => {
 	}, [fileUploader.progress])
 
 	return (
-		<>
-			{!locationId && (
-				<Button 
-				onClick={openModal}
+		<>	
+			<Button 
+				onClick={locationId && openModal} 
 			>
 				Ladda upp bild
-			</Button>
-			)}
-			
+			</Button> 
 			<UploadImgModal 
 				fileUploader={fileUploader}
 				show={show}

@@ -41,7 +41,7 @@ const useLocation = (locationId = null) => {
 	const createLocation = async (locationValues = null, isOnBoarding) => {
 		if (!locationValues) return
 
-		const { coords, locationName, locationId, temp } = locationValues
+		const { coords, locationName, locationId } = locationValues
 
 		try {
 			await addDoc(savedLocationsColRef, {
@@ -53,7 +53,6 @@ const useLocation = (locationId = null) => {
 				locationName,
 				created: serverTimestamp(),
 				owner: currentUser.uid,
-				// outsideTemp: temp
 			})
 
 			console.log("doc created");

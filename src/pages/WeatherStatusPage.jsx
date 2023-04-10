@@ -22,11 +22,9 @@ const WeatherStatusPage = () => {
 
 	const stations = useStations()
 	const { show, openModal, closeModal } = useModal()
-	console.log(openModal);
 
 	const allowImgRequest = locationId ? false : true
 	const img = useDoc(locationId, undefined, allowImgRequest)
-
 	const [ coords, setCoords ] = useState(null)
 
 	useEffect(() => {
@@ -121,7 +119,7 @@ const WeatherStatusPage = () => {
 
 		{weatherData.data && (
 			<CustomModal 
-				text='save'
+				text='Spara'
 				spotName={weatherData.data.name}
 				show={show}
 				handleClose={handleClose}

@@ -3,7 +3,7 @@ import { Col, Alert, Container, Row } from 'react-bootstrap'
 import FavoritesCard from './FavoritesCard'
 import DeleteModal from '../Modal/DeleteModal'
 import useLocation from '../../hooks/useLocation'
-import useCollection from '../../hooks/useCollection'
+import useCollection from '../../hooks/UseCollection'
 
 const FavoritesWrapper = () => {
 	const [locationToBeDeleted, setLocationToBeDeleted] = useState()
@@ -52,9 +52,10 @@ const FavoritesWrapper = () => {
 						{favorites.locationQuery.data &&
 							favorites.locationQuery.data.length > 0 &&
 							favorites.locationQuery.data.map((item) => (
-								<Col key={item._id} >
+								<Col key={item._id} className='py-2'>
 									<FavoritesCard 
 										deleteClick={openModal}
+										{...item}
 									/>
 								</Col>
 							))}
