@@ -19,24 +19,10 @@ const useAuthContext = () => {
 
 const AuthContextProvider = ({ children }) => {
 	const [ currentUser, setCurrentUser ] = useState(null)
-	const [ userName, setUserName ] = useState(null)
-	const [ userEmail, setUserEmail]  = useState(null)
-	const [ userPhotoUrl, setUserPhotoUrl ] = useState(null)
 	const [ loading, setLoading ] = useState(true)
 
-	const signup = async ( email, password, name, photo ) => {
-		await createUserWithEmailAndPassword(auth, email, password)
-
-		await setDisplayNameAndPhoto(name, photo)
-
-		await reloadUser()
-
-		const docRef = doc(db, 'users', auth.currentUser.uid)
-		await setDoc(docRef, {
-			name,
-			email,
-			photoURL: auth.currentUser.photoURL,
-		})
+	const signup = async ( email, password ) => {
+		return createUserWithEmailAndPassword(auth, email, password)
 	}
 
 	const login = (email, password) => {
@@ -47,37 +33,17 @@ const AuthContextProvider = ({ children }) => {
 		return signOut(auth)
 	}
 
-	const reloadUser = async () => {
-		await auth.currentUser.reload()
-		setCurrentUser(auth.currentUser)
-		setUserName(auth.currentUser.displayName)
-		setUserEmail(auth.currentUser.email)
-		setUserPhotoUrl(auth.currentUser.photoURL)
-		return true
+	const setEmail = (newEmail) => {
+		return updateEmail(currentUser, newEmail)
 	}
 
-	const setDisplayNameAndPhoto = async (displayName, photo) => {
-		let photoURL = auth.currentUser.photoURL
+	const setPassword = (newPassword) => {
+		return updatePassword(currentUser, newPassword)
+	}
 
-		if (photo) {
-			const fileRef = ref(storage, `photos/${auth.currentUser.email}/${photo.name}`)
-
-			try {
-				const uploadResult = await uploadBytes(fileRef, photo)
-
-				photoURL = await getDownloadURL(uploadResult.ref)
-
-				console.log("Photo uploaded successfully, download url is:", photoURL)
-
-			} catch (e) {
-				console.log("Upload failed", e)
-				setError("Photo failed to upload!")
-			}
-		}	
-
-		return updateProfile(auth.currentUser, {
-			displayName,
-			photoURL,
+	const setDisplayName = (name) => {
+		return updateProfile(currentUser, {
+			displayName: name,
 		})
 	}
 
@@ -85,9 +51,6 @@ const AuthContextProvider = ({ children }) => {
 		// listen for auth-state changes
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			setCurrentUser(user)
-			setUserName(user?.displayName)
-			setUserEmail(user?.email)
-			setUserPhotoUrl(user?.photoURL)
 			setLoading(false)
 		})
 
@@ -99,11 +62,8 @@ const AuthContextProvider = ({ children }) => {
 		currentUser,
 		login,
 		logout,
-		reloadUser,
-		setDisplayNameAndPhoto,
-		userEmail,
-		userName,
-		userPhotoUrl,
+		setEmail,
+		setPassword,
 		loading,
 		setLoading
 	}
