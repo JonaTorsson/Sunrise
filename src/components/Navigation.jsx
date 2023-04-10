@@ -1,9 +1,10 @@
-import {Container, Navbar, Nav, NavDropdown, Image} from 'react-bootstrap'
+import {Container, Navbar, Nav, NavDropdown} from 'react-bootstrap'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuthContext } from '../contexts/AuthContext'
+import ProfileDetails from './ProfileDetails'
 
 const Navigation = () => {
-	const { currentUser, userName, userEmail, userPhotoUrl } = useAuthContext()
+	const { currentUser } = useAuthContext()
 	return (
 		<Navbar bg="dark" variant="dark" expand="md">
 			<Container>
@@ -29,15 +30,7 @@ const Navigation = () => {
 									<Nav.Link as={NavLink} to="/map">Map</Nav.Link>
 
 									<NavDropdown title={
-										userPhotoUrl
-											? <Image
-												src={userPhotoUrl}
-												height={30}
-												width={30}
-												fluid
-												roundedCircle
-											  />
-											: userName || userEmail
+										<ProfileDetails currentUser={currentUser}/>
 									}>
 										<NavLink to="update-profile" className="dropdown-item">Update Profile</NavLink>
 										<NavLink to="profile" className="dropdown-item">Mina sidor</NavLink>
