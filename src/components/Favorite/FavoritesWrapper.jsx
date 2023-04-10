@@ -3,7 +3,7 @@ import { Col, Alert, Container, Row } from 'react-bootstrap'
 import FavoritesCard from './FavoritesCard'
 import DeleteModal from '../Modal/DeleteModal'
 import useLocation from '../../hooks/useLocation'
-import useCollection from '../../hooks/UseCollection'
+import useCollection from '../../hooks/useCollection'
 
 const FavoritesWrapper = () => {
 	const [locationToBeDeleted, setLocationToBeDeleted] = useState()

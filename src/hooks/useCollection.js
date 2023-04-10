@@ -2,7 +2,7 @@ import { doc, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import useBucket from './useBucket'
 
-const UseCollection = () => {
+const useCollection = () => {
 	const { deleteFromBucket } = useBucket()
 
 	const deleteLocation = async (location) => {
@@ -21,4 +21,4 @@ const UseCollection = () => {
 	return { deleteLocation }
 }
 
-export default UseCollection
+export default useCollection
