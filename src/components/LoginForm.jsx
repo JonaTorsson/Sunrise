@@ -1,42 +1,42 @@
-import React, { useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuthContext } from '../contexts/AuthContext'
+import React from 'react'
+
+import useLoginUser from '../hooks/useLoginUser'
+import useForm from '../hooks/useForm'
+import { Alert } from 'react-bootstrap'
 
 const LoginForm = () => {
-	const emailRef = useRef()
-	const passwordRef = useRef()
-	const [error, setError] = useState(null)
-	const [loading, setLoading] = useState(false)
-	const { login } = useAuthContext()
-	const navigate = useNavigate()
+	const [ values, handleChange ] = useForm({
+		email: "",
+		password: ""
+	})
+
+	const { signIn, isLoading, message } = useLoginUser()
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		setError(null)
-
-		try {
-			setLoading(true)
-			await login(emailRef.current.value, passwordRef.current.value)
-			navigate('/')
-		} catch (err) {
-			setError(err.message)
-			setLoading(false)
-		}
+		
+		signIn(values)
 	}
-  return (
-		<div className='container-form'>
-			{/* {error && <alert </alert> } */}
-			<form id='registerForm' onSubmit={handleSubmit}>
+	return (
+		<>
+			{message && (
+				<Alert severety={message.type}>
+					{message.msg}
+				</Alert>
+			)}
+			<div className='container-form'>
+				<form id='registerForm' onSubmit={handleSubmit}>
 
-				<label htmlFor="email">Email</label>
-				<input id='email' type="email" ref={emailRef} required/>
+					<label htmlFor="email">Epost</label>
+					<input name='email' id='email' type="email" onChange={handleChange} value={values.email} required/>
 
-				<label className='form-label' htmlFor="password">Lösenord</label>
-				<input id='password' type="password" ref={passwordRef} required/>
+					<label className='form-label' htmlFor="password">Lösenord</label>
+					<input name='password' id='password' type="password" onChange={handleChange} value={values.password} required/>
 
-				<button className='link-btn' disabled={loading} type='submit'>Logga in</button>
-			</form>
-		</div>
+					<button className='link-btn' disabled={isLoading} type='submit'>Logga in</button>
+				</form>
+			</div>
+		</>
 	)
 }
 
